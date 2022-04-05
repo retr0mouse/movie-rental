@@ -1,8 +1,8 @@
-package com.example.moviesrentservice.movie;
+package com.example.movies_rent_service.movie;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
@@ -10,8 +10,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface MovieRepository extends JpaRepository<Movie, Long> {   // In generics are entity class and id
-    @Query("SELECT m FROM Movie m WHERE m.title = ?1") // Overrides the Hibernate prediction which based on method title
+public interface MovieRepository extends PagingAndSortingRepository<Movie, Long> {   // In generics are entity class and id
+    @Query("SELECT m FROM Movie m WHERE m.title = ?1") // Overrides the Hibernate prediction which is based on method title
     Optional<Movie> findMovieByTitle(String title);
 
 //    @Query("SELECT m FROM Movie m WHERE m.releaseDate = ?1 AND m.genreId > ?2")

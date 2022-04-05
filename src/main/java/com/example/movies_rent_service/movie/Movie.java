@@ -1,13 +1,13 @@
-package com.example.moviesrentservice.movie;
+package com.example.movies_rent_service.movie;
+
+import com.example.movies_rent_service.genre.Genre;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 
-@Entity(name = "Movie")
-@Table
+@Entity (name = "Movie")
+@Table (name = "movie")
 public class Movie {
-
     @Id
     @SequenceGenerator (    // to generate indexes automatically
             name = "movie_sequence",
@@ -18,7 +18,6 @@ public class Movie {
             strategy = GenerationType.SEQUENCE,
             generator = "movie_sequence"
     )
-
     @Column (
             name= "id",
             updatable = false
@@ -33,13 +32,32 @@ public class Movie {
     private String title;
 
     @Column (
-            name = "releaseDate",
+            name = "release_date",
             nullable = false,
             columnDefinition = "DATE"
     )
     private Date releaseDate;
 
-    @Column (name = "genreId")
+//    @OneToOne (cascade = CascadeType.ALL)
+//    @JoinColumn (
+//            name = "genre_id",
+//            referencedColumnName = "id"
+//    )
+//    private Genre genre;
+
+//    public void setGenre(Genre genre) {
+//        this.genre = genre;
+//    }
+//
+//    public Genre getGenre() {
+//        return genre;
+//    }
+
+    @Column (
+            name = "genre_id",
+            updatable = false,
+            insertable = false
+    )
     private Long genreId;
 
     public Movie(String title, Date releaseDate, Long genreId) {
@@ -47,6 +65,12 @@ public class Movie {
         this.releaseDate = releaseDate;
         this.genreId = genreId;
     }
+
+//    public Movie(String title, Date releaseDate, Genre genre) {
+//        this.title = title;
+//        this.releaseDate = releaseDate;
+//        this.genre = genre;
+//    }
 
     public Movie() {
     }
