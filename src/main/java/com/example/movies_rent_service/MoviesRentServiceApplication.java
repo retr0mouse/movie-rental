@@ -25,13 +25,16 @@ public class MoviesRentServiceApplication {
     @Bean
     CommandLineRunner commandLineRunner(MovieRepository movieRepository, GenreRepository genreRepository) {
         return args -> {
-//            var faker = new Faker();
-//            var genre = new Genre(
-//                    faker.book().genre(),
-//                    faker.lorem().sentence()
-//            );
-//            var movie = new Movie(faker.book().title(), faker.date().between(new Date(0L), new Date()), genre);
-//            movieRepository.save(movie);
+            var faker = new Faker();
+            var genre = new Genre(
+                    faker.book().genre(),
+                    faker.lorem().sentence()
+            );
+            var movie = new Movie(faker.book().title(), faker.date().between(new Date(0L), new Date()), genre);
+            movieRepository.save(movie);
+//            genreRepository.findById(1L).ifPresent(System.out::println);
+            genreRepository.findById(1L).ifPresent(System.out::println);
+            genreRepository.deleteById(1L);
 //            generateRandomMovies(movieRepository);
 //            generateRandomGenres(genreRepository);
 //            PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("releaseDate").descending());

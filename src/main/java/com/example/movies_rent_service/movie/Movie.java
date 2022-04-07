@@ -38,20 +38,16 @@ public class Movie {
     )
     private Date releaseDate;
 
-//    @OneToOne (cascade = CascadeType.ALL)
-//    @JoinColumn (
-//            name = "genre_id",
-//            referencedColumnName = "id"
-//    )
-//    private Genre genre;
-
-//    public void setGenre(Genre genre) {
-//        this.genre = genre;
-//    }
-//
-//    public Genre getGenre() {
-//        return genre;
-//    }
+    @OneToOne (
+            cascade = CascadeType.ALL,  // this allows to save the genre into a db when saving a movie
+                                        // ALL means that all crud operations should update the genre as well
+            fetch = FetchType.EAGER     // eager fetch is by default, it fetches the other table no matter what
+    )
+    @JoinColumn (
+        name = "genre_id",          // column in movie table
+        referencedColumnName = "id" // id column in genre table
+    )
+    private Genre genre;
 
     @Column (
             name = "genre_id",
@@ -66,18 +62,13 @@ public class Movie {
         this.genreId = genreId;
     }
 
-//    public Movie(String title, Date releaseDate, Genre genre) {
-//        this.title = title;
-//        this.releaseDate = releaseDate;
-//        this.genre = genre;
-//    }
-
     public Movie() {
     }
 
-    public Movie(String title, Date releaseDate) {
+    public Movie(String title, Date releaseDate, Genre genre) {
         this.title = title;
         this.releaseDate = releaseDate;
+        this.genre = genre;
     }
 
     @Override
@@ -85,8 +76,8 @@ public class Movie {
         return "Movie{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", release_date=" + releaseDate +
-                ", genre_id=" + genreId +
+                ", releaseDate=" + releaseDate +
+                ", genreId=" + genreId +
                 '}';
     }
 
@@ -120,5 +111,13 @@ public class Movie {
 
     public Long getGenreId() {
         return genreId;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    public Genre getGenre() {
+        return genre;
     }
 }

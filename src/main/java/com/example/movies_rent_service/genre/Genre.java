@@ -1,10 +1,21 @@
 package com.example.movies_rent_service.genre;
 
+import com.example.movies_rent_service.movie.Movie;
+
 import javax.persistence.*;
 
 @Entity(name = "Genre")
-@Table(name = "genre")
+@Table(
+        name = "genre",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "genre_title_unique",
+                        columnNames = "title"
+                )
+        }
+    )
 public class Genre {
+
     @Id
     @SequenceGenerator(    // to generate indexes automatically
             name = "genre_sequence",
@@ -32,7 +43,32 @@ public class Genre {
     )
     private String description;
 
+    @OneToOne (
+            mappedBy = "genre"  // for bidirectional relationship
+    )
+    private Movie movie;
+
     public Genre() {
+    }
+
+    @Override
+    public String toString() {
+        return "Genre{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
+    public Genre(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
+    public Genre(Long id, String title, String description) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
     }
 
     public void setId(Long id) {
@@ -57,16 +93,5 @@ public class Genre {
 
     public String getDescription() {
         return description;
-    }
-
-    public Genre(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-
-    public Genre(Long id, String title, String description) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
     }
 }
