@@ -3,6 +3,9 @@ package com.example.movies_rent_service.genre;
 import com.example.movies_rent_service.movie.Movie;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "Genre")
 @Table(
@@ -43,12 +46,24 @@ public class Genre {
     )
     private String description;
 
-    @OneToOne (
-            mappedBy = "genre"  // for bidirectional relationship
+    @OneToMany (
+            mappedBy = "genre",
+            cascade = CascadeType.ALL,
+            // orphan removal in this type of relation is a bad thing
+            fetch = FetchType.LAZY
     )
-    private Movie movie;
+    private List<Movie> movies = new ArrayList<>();
 
     public Genre() {
+    }
+
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
+    }
+
+    @Transactional
+    public List<Movie> getMovies() {
+        return movies;
     }
 
     @Override
@@ -93,5 +108,19 @@ public class Genre {
 
     public String getDescription() {
         return description;
+    }
+
+    public void addMovie(Movie movie) {
+        if (!this.movies.contains(movie)) {
+            this.movies.add(movie);
+            movie.setGenre(this);
+        }
+    }
+
+    public void removeMovie(Movie movie) {
+        if (this.movies.contains(movie)) {
+            this.movies.remove(movie);
+            movie.setGenre(null);
+        }
     }
 }

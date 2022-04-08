@@ -5,15 +5,18 @@ import com.example.movies_rent_service.genre.GenreRepository;
 import com.example.movies_rent_service.movie.Movie;
 import com.example.movies_rent_service.movie.MovieRepository;
 import com.github.javafaker.Faker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootApplication
 public class MoviesRentServiceApplication {
@@ -22,7 +25,9 @@ public class MoviesRentServiceApplication {
         SpringApplication.run(MoviesRentServiceApplication.class, args);
     }
 
+
     @Bean
+    @Transactional
     CommandLineRunner commandLineRunner(MovieRepository movieRepository, GenreRepository genreRepository) {
         return args -> {
             var faker = new Faker();
@@ -30,16 +35,19 @@ public class MoviesRentServiceApplication {
                     faker.book().genre(),
                     faker.lorem().sentence()
             );
-            var movie = new Movie(faker.book().title(), faker.date().between(new Date(0L), new Date()), genre);
-            movieRepository.save(movie);
-//            genreRepository.findById(1L).ifPresent(System.out::println);
-            genreRepository.findById(1L).ifPresent(System.out::println);
-            genreRepository.deleteById(1L);
-//            generateRandomMovies(movieRepository);
-//            generateRandomGenres(genreRepository);
-//            PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("releaseDate").descending());
-//            Page<Movie> page = movieRepository.findAll(pageRequest);
-//            System.out.println(page);
+            genre.addMovie(new Movie(faker.book().title(), faker.date().between(new Date(0L), new Date())));
+            genre.addMovie(new Movie(faker.book().title(), faker.date().between(new Date(0L), new Date())));
+            genre.addMovie(new Movie(faker.book().title(), faker.date().between(new Date(0L), new Date())));
+
+            genreRepository.save(genre);
+            genreRepository.findById(1L).ifPresent(g -> {
+//                System.out.println(genre.getTitle());
+                List<Movie> movies = genre.getMovies();
+                System.out.println(movies.size());
+                movies.forEach(m -> {
+                    System.out.println(m.getTitle() + " has the genre " + g.getTitle());
+                });
+            });
         };
     }
 
@@ -50,17 +58,17 @@ public class MoviesRentServiceApplication {
                 .forEach(movie -> System.out.printf("%s, date: %s \n", movie.getTitle(), movie.getReleaseDate()));
     }
 
-    private void generateRandomMovies(MovieRepository movieRepository) {
-        var faker = new Faker();
-        for (int i = 0; i <= 20; i++) {
-            var movie = new Movie(
-                    faker.book().title(),
-                    faker.date().between(new Date(0L), new Date()),
-                    Integer.toUnsignedLong(Integer.parseInt(faker.number().digit()))
-            );
-            movieRepository.save(movie);
-        }
-    }
+//    private void generateRandomMovies(MovieRepository movieRepository) {
+//        var faker = new Faker();
+//        for (int i = 0; i <= 20; i++) {
+//            var movie = new Movie(
+//                    faker.book().title(),
+//                    faker.date().between(new Date(0L), new Date()),
+//                    Integer.toUnsignedLong(Integer.parseInt(faker.number().digit()))
+//            );
+//            movieRepository.save(movie);
+//        }
+//    }
 
     private void generateRandomGenres(GenreRepository genreRepository) {
         var faker = new Faker();

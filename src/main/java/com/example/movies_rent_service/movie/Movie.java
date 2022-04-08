@@ -34,41 +34,37 @@ public class Movie {
     @Column (
             name = "release_date",
             nullable = false,
-            columnDefinition = "DATE"
+            columnDefinition = "TIMESTAMP WITHOUT TIME ZONE"
     )
     private Date releaseDate;
 
-    @OneToOne (
-            cascade = CascadeType.ALL,  // this allows to save the genre into a db when saving a movie
-                                        // ALL means that all crud operations should update the genre as well
-            fetch = FetchType.EAGER     // eager fetch is by default, it fetches the other table no matter what
+//    @Column (
+//            name = "genre_id",
+//            updatable = false,
+//            insertable = false
+//    )
+//    private Long genreId;
+
+    @ManyToOne (
+            cascade = CascadeType.ALL
+//            cascade = CascadeType.ALL,  // this allows to save the genre into a db when saving a movie
+//                                        // ALL means that all crud operations should update the genre as well
+//            fetch = FetchType.LAZY     // eager fetch is by default, it fetches the other table no matter what
     )
     @JoinColumn (
         name = "genre_id",          // column in movie table
-        referencedColumnName = "id" // id column in genre table
+        nullable = false,
+        referencedColumnName = "id", // id column in genre table
+        foreignKey = @ForeignKey(name = "genre_id_fk")  // to specify the name
     )
     private Genre genre;
-
-    @Column (
-            name = "genre_id",
-            updatable = false,
-            insertable = false
-    )
-    private Long genreId;
-
-    public Movie(String title, Date releaseDate, Long genreId) {
-        this.title = title;
-        this.releaseDate = releaseDate;
-        this.genreId = genreId;
-    }
 
     public Movie() {
     }
 
-    public Movie(String title, Date releaseDate, Genre genre) {
+    public Movie(String title, Date releaseDate) {
         this.title = title;
         this.releaseDate = releaseDate;
-        this.genre = genre;
     }
 
     @Override
@@ -77,7 +73,7 @@ public class Movie {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", releaseDate=" + releaseDate +
-                ", genreId=" + genreId +
+                ", genre=" + genre +
                 '}';
     }
 
@@ -93,10 +89,6 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    public void setGenreId(Long genreId) {
-        this.genreId = genreId;
-    }
-
     public Long getId() {
         return id;
     }
@@ -107,10 +99,6 @@ public class Movie {
 
     public Date getReleaseDate() {
         return releaseDate;
-    }
-
-    public Long getGenreId() {
-        return genreId;
     }
 
     public void setGenre(Genre genre) {
