@@ -1,9 +1,14 @@
 package com.example.movies_rent_service.movie;
 
+import com.example.movies_rent_service.actor.Actor;
+import com.example.movies_rent_service.actor_in_movie.ActorInMovie;
 import com.example.movies_rent_service.genre.Genre;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity (name = "Movie")
 @Table (name = "movie")
@@ -38,6 +43,9 @@ public class Movie {
     )
     private Date releaseDate;
 
+    @Transient  // tells Hibernate that this shouldn't be a table
+    private Float price;
+
 //    @Column (
 //            name = "genre_id",
 //            updatable = false,
@@ -59,6 +67,23 @@ public class Movie {
     )
     private Genre genre;
 
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "movie"
+    )
+//    @JoinTable(
+//            name = "actor_in_movie",
+//            joinColumns = @JoinColumn(
+//                    name = "actor_id",
+//                    foreignKey = @ForeignKey(name = "actor_id_fk")
+//            ),
+//            inverseJoinColumns = @JoinColumn(
+//                    name = "movie_id",
+//                    foreignKey = @ForeignKey(name = "movie_id_fk")
+//            )
+//    )
+    private List<ActorInMovie> actorsInMovies = new ArrayList<>();
+
     public Movie() {
     }
 
@@ -73,8 +98,26 @@ public class Movie {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", releaseDate=" + releaseDate +
-                ", genre=" + genre +
+                ", actorsInMovies=" + actorsInMovies +
                 '}';
+    }
+
+    public List<ActorInMovie> getActorsInMovies() {
+        return actorsInMovies;
+    }
+
+    public void addActorInMovie(ActorInMovie actorInMovie) {
+        if (!actorsInMovies.contains(actorInMovie)) {
+            actorsInMovies.add(actorInMovie);
+        }
+    }
+
+    public void removeActorInMovie(ActorInMovie actorInMovie) {
+        actorsInMovies.remove(actorInMovie);
+    }
+
+    public void setActorsInMovies(List<ActorInMovie> actors) {
+        this.actorsInMovies = actors;
     }
 
     public void setId(Long id) {

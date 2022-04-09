@@ -1,6 +1,8 @@
 package com.example.movies_rent_service.genre;
 
 import com.example.movies_rent_service.movie.Movie;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -61,7 +63,7 @@ public class Genre {
         this.movies = movies;
     }
 
-    @Transactional
+    @JsonBackReference  // to prevent StackOverflowError when accessing this method
     public List<Movie> getMovies() {
         return movies;
     }
