@@ -14,7 +14,7 @@ public class ActorInMovieId implements Serializable {
     @Column(name = "actor_id")
     private Long actorId;
 
-    public ActorInMovieId(Long movie_id, Long actor_id) {
+    public ActorInMovieId(Long actor_id, Long movie_id) {
         this.movieId = movie_id;
         this.actorId = actor_id;
     }

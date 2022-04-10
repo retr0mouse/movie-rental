@@ -6,6 +6,7 @@ import com.example.movies_rent_service.genre.Genre;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Movie {
             nullable = false,
             columnDefinition = "TIMESTAMP WITHOUT TIME ZONE"
     )
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     @Transient  // tells Hibernate that this shouldn't be a table
     private Float price;
@@ -57,7 +58,7 @@ public class Movie {
             cascade = CascadeType.ALL
 //            cascade = CascadeType.ALL,  // this allows to save the genre into a db when saving a movie
 //                                        // ALL means that all crud operations should update the genre as well
-//            fetch = FetchType.LAZY     // eager fetch is by default, it fetches the other table no matter what
+//            fetch = FetchType.LAZY      // eager fetch is by default, it fetches the other table no matter what
     )
     @JoinColumn (
         name = "genre_id",          // column in movie table
@@ -87,7 +88,7 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(String title, Date releaseDate) {
+    public Movie(String title, LocalDate releaseDate) {
         this.title = title;
         this.releaseDate = releaseDate;
     }
@@ -98,10 +99,13 @@ public class Movie {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", releaseDate=" + releaseDate +
+                ", price=" + price +
+                ", genre=" + genre +
                 ", actorsInMovies=" + actorsInMovies +
                 '}';
     }
 
+    @JsonBackReference
     public List<ActorInMovie> getActorsInMovies() {
         return actorsInMovies;
     }
@@ -128,7 +132,7 @@ public class Movie {
         this.title = title;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -140,7 +144,7 @@ public class Movie {
         return title;
     }
 
-    public Date getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return releaseDate;
     }
 

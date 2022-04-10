@@ -16,7 +16,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,62 +34,65 @@ public class MoviesRentServiceApplication {
                                         GenreRepository genreRepository,
                                         ActorRepository actorRepository) {
         return args -> {
-            var faker = new Faker();
-
-            var genre = new Genre(
-                    faker.book().genre(),
-                    faker.lorem().sentence()
-            );
-            var movie1 = generateRandomMovie();
-            var movie2 = generateRandomMovie();
-            var movie3 = generateRandomMovie();
-
-            genre.addMovie(movie1);
-            genre.addMovie(movie2);
-            genre.addMovie(movie3);
-
-            var actor1 = new Actor(
-                    "Not Ryan",
-                    "Not Gosling",
-                    null,
-                    null
-            );
-            var actor2 = new Actor(
-                    "Ryan",
-                    "Gosling",
-                    "Canadian",
-                    new Date(1980, Calendar.NOVEMBER, 12)
-            );
-            var actor3 = new Actor(
-                    "Ryan",
-                    "Reynolds",
-                    "Canadian",
-                    new Date(1976, Calendar.OCTOBER, 23)
-            );
-            movie1.addActorInMovie(new ActorInMovie(
-                    new ActorInMovieId(movie1.getId(), actor1.getId()),
-                    movie1,
-                    actor1
-            ));
-            movie2.addActorInMovie(new ActorInMovie(
-                    new ActorInMovieId(movie2.getId(), actor2.getId()),
-                    movie2,
-                    actor2
-            ));
-            movie3.addActorInMovie(new ActorInMovie(
-                    new ActorInMovieId(movie3.getId(), actor3.getId()),
-                    movie3,
-                    actor3
-            ));
-            movieRepository.save(movie1);
-            movieRepository.save(movie2);
-            movieRepository.save(movie3);
+//            var faker = new Faker();
+//
+//            var genre = new Genre(
+//                    faker.book().genre(),
+//                    faker.lorem().sentence()
+//            );
+//            var movie1 = generateRandomMovie();
+//            var movie2 = generateRandomMovie();
+//            var movie3 = generateRandomMovie();
+//
+//            genre.addMovie(movie1);
+//            genre.addMovie(movie2);
+//            genre.addMovie(movie3);
+//
+//            var actor1 = new Actor(
+//                    "Not Ryan",
+//                    "Not Gosling",
+//                    null,
+//                    null
+//            );
+//            var actor2 = new Actor(
+//                    "Ryan",
+//                    "Gosling",
+//                    "Canadian",
+//                    LocalDate.of(1980, Calendar.NOVEMBER, 12)
+//            );
+//            var actor3 = new Actor(
+//                    "Ryan",
+//                    "Reynolds",
+//                    "Canadian",
+//                    LocalDate.of(1976, Calendar.OCTOBER, 23)
+//            );
+//            movie1.addActorInMovie(new ActorInMovie(
+//                    new ActorInMovieId(movie1.getId(), actor1.getId()),
+//                    movie1,
+//                    actor1
+//            ));
+//            movie2.addActorInMovie(new ActorInMovie(
+//                    new ActorInMovieId(movie2.getId(), actor2.getId()),
+//                    movie2,
+//                    actor2
+//            ));
+//            movie3.addActorInMovie(new ActorInMovie(
+//                    new ActorInMovieId(movie3.getId(), actor3.getId()),
+//                    movie3,
+//                    actor3
+//            ));
+//            movieRepository.save(movie1);
+//            movieRepository.save(movie2);
+//            movieRepository.save(movie3);
         };
     }
 
     private Movie generateRandomMovie() {
         var faker = new Faker();
-        return new Movie(faker.book().title(), faker.date().between(new Date(0L), new Date()));
+        return new Movie(
+                faker.book().title(),
+                faker.date().between(new Date(0L), new Date())
+                        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); // convert Date to LocalDate
     }
 
     private void sorting(MovieRepository movieRepository) {

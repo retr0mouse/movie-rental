@@ -16,18 +16,20 @@ public class GenreController {
         this.genreService = genreService;
     }
 
-    @GetMapping("getAll")
+    @GetMapping("get")
     public List<Genre> getAllGenres() {
         return genreService.getAllGenres();
     }
 
-    @GetMapping("getById")
-    public Genre getGenreById(@RequestParam String id) {
-        Long longId = Long.parseLong(id);
-        return genreService.getGenreById(longId);
+    @GetMapping(value = "get", params = "id")
+    public Genre getGenreById(@RequestParam Long id) {
+        if (!id.toString().matches("^\\d+$")) {
+            throw new IllegalStateException("Please provide an id");
+        }
+        return genreService.getGenreById(id);
     }
 
-    @PostMapping("addGenre")
+    @PostMapping("add")
     public void addGenre(@RequestBody Genre genre) {
         genreService.addGenre(genre);
     }

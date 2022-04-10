@@ -1,6 +1,7 @@
 package com.example.movies_rent_service.rental;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity(name = "Rental")
@@ -33,12 +34,12 @@ public class Rental {
     @Column (
             name = "start_date"
     )
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column (
             name = "end_date"
     )
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column (
             name = "total_price"
@@ -53,11 +54,11 @@ public class Rental {
         this.movieId = movieId;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
@@ -73,11 +74,11 @@ public class Rental {
         return movieId;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
@@ -85,7 +86,7 @@ public class Rental {
         return totalPrice;
     }
 
-    public Rental(Long movieId, Date startDate, Date endDate, float totalPrice) {
+    public Rental(Long movieId, LocalDate startDate, LocalDate endDate, float totalPrice) {
         this.movieId = movieId;
         this.startDate = startDate;
         this.endDate = endDate;

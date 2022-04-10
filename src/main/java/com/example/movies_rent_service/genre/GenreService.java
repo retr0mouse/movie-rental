@@ -17,40 +17,43 @@ public class GenreService {
         this.genreRepository = genreRepository;
     }
 
+    // returns all genres from database
     public List<Genre> getAllGenres() {
         return genreRepository.findAll();
     }
 
-    public Genre getGenreById(Long id) throws RuntimeException{ // TO DO: better exception handling
-        try {
-            return genreRepository.findById(id).get();
-        } catch (RuntimeException e) {
-            throw e;
-        }
+    // returns genre by id from database
+    public Genre getGenreById(Long id) throws IllegalStateException{
+        return genreRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(
+                        "The genre with id (" + id + ") is not in the database"));
     }
 
+    // adds genre to database
     public void addGenre(Genre genre) {
         Optional<Genre> genreOptional = genreRepository
                 .findGenreByTitle(genre.getTitle());
         if (genreOptional.isPresent()) {
-            throw new IllegalStateException("Genre with this title already exists");
+            throw new IllegalStateException("This genre is already in the database");
         }
         genreRepository.save(genre);
     }
 
+    // deletes genre from database
     public void deleteGenre(Long id) {
         boolean exists = genreRepository.existsById(id);
         if (!exists) {
-            throw new IllegalStateException("there is no genre with this id: " + id);
+            throw new IllegalStateException("The genre with id (" + id + ") is not in the database");
         }
         genreRepository.deleteById(id);
     }
 
+    // updates genre in database
     @Transactional
     public void updateGenre(Long id, String title, String description) {
         var genre = genreRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException(
-                        "genre with this id: " + id + " does not exist"));
+                        "The genre with id (" + id + ") is not in the database"));
         if (title != null && title.length() > 0 && !Objects.equals(genre.getTitle(), title)) {
             genre.setTitle(title);
         }

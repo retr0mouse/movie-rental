@@ -74,6 +74,7 @@ public class Genre {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
+                ", movies=" + movies +
                 '}';
     }
 

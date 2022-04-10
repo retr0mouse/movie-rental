@@ -2,8 +2,10 @@ package com.example.movies_rent_service.actor;
 
 import com.example.movies_rent_service.actor_in_movie.ActorInMovie;
 import com.example.movies_rent_service.movie.Movie;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +51,7 @@ public class Actor {
             name = "birth_date",
             columnDefinition = "TIMESTAMP WITHOUT TIME ZONE"
     )
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @OneToMany (
             cascade = CascadeType.ALL,
@@ -57,7 +59,7 @@ public class Actor {
     )
     private List<ActorInMovie> actorsInMovies = new ArrayList<>();
 
-    public Actor(String firstName, String lastName, String citizenship, Date birthDate) {
+    public Actor(String firstName, String lastName, String citizenship, LocalDate birthDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.citizenship = citizenship;
@@ -77,6 +79,7 @@ public class Actor {
         actorsInMovies.remove(actorInMovie);
     }
 
+    @JsonBackReference
     public List<ActorInMovie> getActorsInMovies() {
         return actorsInMovies;
     }
@@ -101,7 +104,7 @@ public class Actor {
         this.citizenship = citizenship;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -121,7 +124,7 @@ public class Actor {
         return citizenship;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 }
