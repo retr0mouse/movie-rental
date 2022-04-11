@@ -27,14 +27,14 @@ public class MoviesRentServiceApplication {
                                         GenreRepository genreRepository,
                                         ActorRepository actorRepository) {
         return args -> {
-            var faker = new Faker();
-
-            var genre = new Genre(
-                    faker.book().genre(),
-                    faker.lorem().sentence()
-            );
-            generateRandomMovies(movieRepository, genre);
-            genreRepository.save(genre);
+//            var faker = new Faker();
+//
+//            var genre = new Genre(
+//                    faker.book().genre(),
+//                    faker.lorem().sentence()
+//            );
+//            generateRandomMovies(movieRepository, genre);
+//            genreRepository.save(genre);
 //            var movie1 = generateRandomMovie();
 //            movie1.getPriceList();
 //            var movie2 = generateRandomMovie();

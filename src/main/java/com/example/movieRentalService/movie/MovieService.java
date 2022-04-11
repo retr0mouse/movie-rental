@@ -3,12 +3,14 @@ package com.example.movieRentalService.movie;
 import com.example.movieRentalService.actorInMovie.ActorInMovieRepository;
 import com.example.movieRentalService.genre.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -84,7 +86,7 @@ public class MovieService {
         movieRepository.deleteById(id);
     }
 
-    public List<Movie> getSortedMovies(String sort1, String sort2, String type1, String type2) {
+    public  List<Movie> getSortedAndPagedMovies(String sort1, String sort2, String type1, String type2, Integer pages) {
         Sort sort = Sort.by("title").ascending();
         if (type1 != null && sort1 != null) {
             if ("d".equals(type1)) {
@@ -93,13 +95,15 @@ public class MovieService {
                 sort = Sort.by(sort1).ascending();
             }
         }
-
         if (type2 != null && sort2 != null) {
             if ("d".equals(type2)) {
                 sort = sort.and(Sort.by(sort2).descending());
             } else {
                 sort = sort.and(Sort.by(sort2).ascending());
             }
+        }
+        if (pages != null) {
+            return movieRepository.findAll(PageRequest.of(0, pages, sort)).getContent();
         }
         return movieRepository.findAll(sort);
     }

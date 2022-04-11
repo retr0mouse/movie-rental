@@ -33,8 +33,9 @@ public class MovieController {
     public List<Movie> getSortedMovies(@RequestParam(value = "sort1", required = false) String sort1,
                                        @RequestParam(value = "sort2", required = false) String sort2,
                                        @RequestParam(value = "type1", required = false) String type1,
-                                       @RequestParam(value = "type2", required = false) String type2) {
-        return movieService.getSortedMovies(sort1, sort2, type1, type2);
+                                       @RequestParam(value = "type2", required = false) String type2,
+                                       @RequestParam(value = "pages", required = false) Integer pages) {
+        return movieService.getSortedAndPagedMovies(sort1, sort2, type1, type2, pages);
     }
 
     @PostMapping("add")
