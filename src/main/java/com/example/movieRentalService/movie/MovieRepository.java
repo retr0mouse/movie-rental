@@ -12,6 +12,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A Movie Repository class which represents a Data Access Layer of Movie entity
+ */
 @Repository
 @Transactional(readOnly = true)
 public interface MovieRepository extends JpaRepository<Movie, Long> {   // In generics are entity class and id
@@ -21,9 +24,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {   // In ge
     Optional<Movie> findMovieByReleaseDate(LocalDate releaseDate);
 
     Optional<Movie> findMovieByTitleAndId(String title, Long id);
-
-//    @Query("SELECT m FROM Movie m WHERE m.releaseDate = ?1 AND m.genreId > ?2")
-//    List<Movie> findMoviesByReleaseDateEqualsAndGenreIdIsGreaterThan(LocalDate date, Long genreId);
 
     @Query(value = "SELECT * FROM Movie WHERE releaseDate = :date AND genreId > :genre", nativeQuery = true)
     List<Movie> findMoviesByReleaseDateEqualsAndGenreIdIsGreaterThanNative(

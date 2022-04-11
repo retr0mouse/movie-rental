@@ -5,6 +5,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * A Movie Controller class which represents an API layer to map endpoints and send requests to the Service Layer
+ * of Movie entity and send back responses.
+ */
 @RestController
 @RequestMapping(path = "api/v1/movie")
 public class MovieController {

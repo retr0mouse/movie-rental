@@ -1,5 +1,8 @@
 package com.example.movieRentalService.moviePrice;
 
+/**
+ * A class to represent a price for old movie rental
+ */
 public class OldMoviePrice {
     private String title = "Old Movie";
     private float price = 1.99f;

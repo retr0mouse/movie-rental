@@ -1,5 +1,8 @@
 package com.example.movieRentalService.moviePrice;
 
+/**
+ * A helper class to collect all the available price classes into one
+ */
 public class PriceList {
     private NewMoviePrice newMoviePrice;
     private RegularMoviePrice regularMoviePrice;

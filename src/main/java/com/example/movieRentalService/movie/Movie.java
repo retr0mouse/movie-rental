@@ -14,8 +14,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.abs;
 
+/**
+ * A Movie Class that represents a "movie" table in the database.
+ * Is used to store metadata about movies.
+ * This entity is in Many-To-One relationship with Genre entity.
+ * This entity is in Many-To-Many relationship with Actor entity.
+ */
 @Entity (name = "Movie")
 @Table (name = "movie")
 public class Movie {
@@ -52,6 +57,13 @@ public class Movie {
     @Transient  // tells Hibernate that this shouldn't be in a table
     private PriceList priceList;
 
+    /**
+     * A Method to calculate the prices according to the release date of the movie and return it,
+     * the older the movie is, the cheaper it is to rent it.
+     * The idea behind it is that PriceList class contains up-to-date information about a single movie price,
+     * so we should update constantly. This implementation is not ideal, but it feels like simplest one.
+     * @return PriceList class
+     */
     public PriceList getPriceList() {
         long weeksOld = ChronoUnit.WEEKS.between(this.releaseDate, LocalDate.now());
         var newPrice = new NewMoviePrice(Math.max(52 - (int) weeksOld, 0));
@@ -65,18 +77,8 @@ public class Movie {
         this.priceList = priceList;
     }
 
-//    @Column (
-//            name = "genre_id",
-//            updatable = false,
-//            insertable = false
-//    )
-//    private Long genreId;
-
     @ManyToOne (
             cascade = CascadeType.ALL
-//            cascade = CascadeType.ALL,  // this allows to save the genre into a db when saving a movie
-//                                        // ALL means that all crud operations should update the genre as well
-//            fetch = FetchType.LAZY      // eager fetch is by default, it fetches the other table no matter what
     )
     @JoinColumn (
         name = "genre_id",          // column in movie table
@@ -86,21 +88,13 @@ public class Movie {
     )
     private Genre genre;
 
+    /**
+     * Stores all entities of the actor-in-movie table
+     */
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "movie"
     )
-//    @JoinTable(
-//            name = "actor_in_movie",
-//            joinColumns = @JoinColumn(
-//                    name = "actor_id",
-//                    foreignKey = @ForeignKey(name = "actor_id_fk")
-//            ),
-//            inverseJoinColumns = @JoinColumn(
-//                    name = "movie_id",
-//                    foreignKey = @ForeignKey(name = "movie_id_fk")
-//            )
-//    )
     private List<ActorInMovie> actorsInMovies = new ArrayList<>();
 
     public Movie() {
@@ -150,6 +144,10 @@ public class Movie {
         this.title = title;
     }
 
+    /**
+     * @param releaseDate release date of the movie
+     * @throws IllegalStateException if we are trying to assign a release date that is in the future
+     */
     public void setReleaseDate(LocalDate releaseDate) throws IllegalStateException{
         if (releaseDate.isAfter(LocalDate.now())) {
             throw new IllegalStateException("Movie release date should not be in future");

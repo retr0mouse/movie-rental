@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.util.Optional;
 
+/**
+ * An Actor Repository class which represents a Data Access Layer of Actor entity
+ */
 public interface ActorRepository extends JpaRepository<Actor, Long> {
     Optional<Actor> findActorByFirstName(String firstName);
 

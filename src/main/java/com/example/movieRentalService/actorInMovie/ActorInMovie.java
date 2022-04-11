@@ -5,6 +5,12 @@ import com.example.movieRentalService.movie.Movie;
 
 import javax.persistence.*;
 
+/**
+ * An ActorInMovie Class that represents an "actor_in_movie" table in the database.
+ * Is used to store metadata about actors in movies.
+ * This entity is in Many-To-One relationship with Actor entity.
+ * This entity is in Many-To-One relationship with Movie entity.
+ */
 @Entity(name = "Actor_in_movie")
 @Table(name = "actor_in_movie")
 public class ActorInMovie {

@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A Rental Repository class which represents a Data Access Layer of Rental entity
+ */
 public interface RentalRepository extends JpaRepository<Rental, Long> {
     // SELECT movie.title, count(rental.movie_id) as "number of rentals" from movie
     // left join rental on rental.movie_id = movie.id group by movie.id order by "number of rentals" desc;

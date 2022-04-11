@@ -7,6 +7,11 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A Genre Class that represents a "genre" table in the database.
+ * Is used to store metadata about genres.
+ * This entity is in One-To-Many relationship with Movie entity.
+ */
 @Entity(name = "Genre")
 @Table(
         name = "genre",
@@ -111,6 +116,10 @@ public class Genre {
         return description;
     }
 
+    /**
+     * Add Movie into this entity's List and into the database
+     * @param movie Movie entity
+     */
     public void addMovie(Movie movie) {
         if (!this.movies.contains(movie)) {
             this.movies.add(movie);
@@ -118,6 +127,10 @@ public class Genre {
         }
     }
 
+    /**
+     * Remove Movie from this entity's List and from the database
+     * @param movie Movie entity
+     */
     public void removeMovie(Movie movie) {
         if (this.movies.contains(movie)) {
             this.movies.remove(movie);

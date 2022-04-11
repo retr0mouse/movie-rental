@@ -8,6 +8,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An Actor Class that represents an "actor" table in the database.
+ * Is used to store metadata about actors.
+ * This entity is in One-To-Many relationship with ActorInMovie entity.
+ */
 @Entity(name = "Actor")
 @Table (name = "actor")
 public class Actor {

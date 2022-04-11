@@ -6,6 +6,11 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * A Rental Class that represents a "rental" table in the database.
+ * Is used to store metadata about rentals and keep statistics about rented movies.
+ * This entity is in Many-to-one relationship with Movie entity.
+ */
 @Entity(name = "Rental")
 @Table (name = "rental")
 public class Rental {
@@ -62,43 +67,45 @@ public class Rental {
         this.totalWeeks = totalWeeks;
     }
 
+    /**
+     * Method to calculate duration of rental in weeks
+     */
     public void calculateTotalWeeks() {
         this.totalWeeks = (long) Math.ceil(ChronoUnit.DAYS.between(this.startDate, this.endDate) / 7.0);
     }
 
+    /**
+     * Method to calculate a number of weeks before it begins
+     * @return number of weeks
+     */
     public long getWeeksUntilRentalStart() {
         return (long) Math.max(Math.ceil(ChronoUnit.DAYS.between(LocalDate.now(), this.startDate) / 7.0), 0);
     }
 
+    /**
+     * Method to calculate and set a total price of rental,
+     * according to current date,
+     * rental start date and movie release date
+     */
     public void calculateTotalPrice() {
         float totalPrice = 0.0f;
-        long weeksUntil = getWeeksUntilRentalStart();
-        int newDuration = movie.getPriceList().getNewMoviePrice().getDuration();
-        int regularDuration = movie.getPriceList().getRegularMoviePrice().getDuration();
-        long weeks = totalWeeks;
-        System.out.println("regular duration until: " + regularDuration);
+        long weeksUntil = getWeeksUntilRentalStart();   // weeks until the start of rental
+        int newDuration = movie.getPriceList().getNewMoviePrice().getDuration();    // duration of "new movie" price
+        int regularDuration = movie.getPriceList().getRegularMoviePrice().getDuration();    // duration of "regular movie" price
+        long weeks = totalWeeks;    // weeks of rental
         newDuration = Math.max((int) (newDuration - weeksUntil), 0);
         weeksUntil = Math.max(weeksUntil - movie.getPriceList().getNewMoviePrice().getDuration(), 0);
-
         if (newDuration > 0) {
             totalPrice = movie.getPriceList().getNewMoviePrice().getPrice() * weeks;
             weeks -= weeks;
         }
         if (weeks > 0) {
             regularDuration = Math.max((int) (regularDuration - weeksUntil), 0);
-            System.out.println("regular duration after: " + regularDuration);
             if (regularDuration > 0) {
-                System.out.println("total price: " + totalPrice);
-                System.out.println("total weeks: " + weeks);
-
                 totalPrice += movie.getPriceList().getRegularMoviePrice().getPrice() * weeks;
                 weeks -= weeks;
-
-                System.out.println("total price: " + totalPrice);
-                System.out.println("total weeks: " + weeks);
             }
             totalPrice += movie.getPriceList().getOldMoviePrice().getPrice() * weeks;
-            System.out.println("total price: " + totalPrice);
         }
         this.totalPrice = totalPrice;
         System.out.println(weeks);
@@ -108,12 +115,16 @@ public class Rental {
         this.id = id;
     }
 
-
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    /**
+     * Set end date of rental
+     * @param endDate end date
+     * @throws IllegalStateException if the end date is before the start date
+     */
+    public void setEndDate(LocalDate endDate) throws IllegalStateException {
         if (endDate.isBefore(this.startDate)) {
             throw new IllegalStateException(
                     "The rental end date shouldn't be before the start date");
@@ -128,7 +139,6 @@ public class Rental {
     public Long getId() {
         return id;
     }
-
 
     public LocalDate getStartDate() {
         return startDate;

@@ -1,5 +1,8 @@
 package com.example.movieRentalService.moviePrice;
 
+/**
+ * A class to represent a price for regular movie rental
+ */
 public class RegularMoviePrice {
     private String title = "Regular Movie";
     private int duration;

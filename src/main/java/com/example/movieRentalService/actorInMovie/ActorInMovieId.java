@@ -5,6 +5,9 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * A Class that represents a composite key of ActorInMovie entity
+ */
 @Embeddable // means that this class can be embeddable into another entity
 public class ActorInMovieId implements Serializable {
 

@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A Class that represents a Service layer of ActorInMovie entity
+ */
 @Service
 public class ActorInMovieService {
     private final ActorInMovieRepository actorInMovieRepository;
@@ -25,12 +28,22 @@ public class ActorInMovieService {
         this.actorRepository = actorRepository;
     }
 
-
+    /**
+     * Get all actors in movies from the database
+     * @return a List of ActorInMovie entities
+     */
     public List<ActorInMovie> getAllActorsInMovies() {
         return actorInMovieRepository.findAll();
     }
 
-    public ActorInMovie getActorInMovieById(Long actorId, Long movieId) {
+    /**
+     * Get ActorInMovie entity from the database
+     * @param actorId actor id
+     * @param movieId movie id
+     * @return ActorInMovie entity
+     * @throws IllegalStateException if actor in movie is not found
+     */
+    public ActorInMovie getActorInMovieById(Long actorId, Long movieId) throws IllegalStateException{
         var index = new ActorInMovieId(actorId, movieId);
         return actorInMovieRepository.findById(index)
                 .orElseThrow(() -> new IllegalStateException(
@@ -38,7 +51,12 @@ public class ActorInMovieService {
                 ));
     }
 
-    public void addActorInMovie(ActorInMovieId actorInMovieId) {
+    /**
+     * Add ActorInMovie into the database
+     * @param actorInMovieId ActorInMovie id
+     * @throws IllegalStateException if either actor or movie is not found or this set is already in the database
+     */
+    public void addActorInMovie(ActorInMovieId actorInMovieId) throws IllegalStateException{
         Optional<ActorInMovie> actorInMovieOptional = actorInMovieRepository.findById(actorInMovieId);
         Optional<Actor> actor = actorRepository.findById(actorInMovieId.getActorId());
         Optional<Movie> movie = movieRepository.findById(actorInMovieId.getMovieId());
@@ -64,7 +82,13 @@ public class ActorInMovieService {
         );
     }
 
-    public void deleteActorInMovie(Long actorId, Long movieId) {
+    /**
+     * Delete an ActorInMovie entity from the database
+     * @param actorId actor id
+     * @param movieId movie id
+     * @throws IllegalStateException if ActorInMovie is not found
+     */
+    public void deleteActorInMovie(Long actorId, Long movieId) throws IllegalStateException{
         var index = new ActorInMovieId(actorId, movieId);
         var actorInMovie = actorInMovieRepository.findById(index);
         if (actorInMovie.isEmpty()) {
