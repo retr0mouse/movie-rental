@@ -20,6 +20,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {   // In ge
 
     Optional<Movie> findMovieByReleaseDate(LocalDate releaseDate);
 
+    Optional<Movie> findMovieByTitleAndId(String title, Long id);
+
 //    @Query("SELECT m FROM Movie m WHERE m.releaseDate = ?1 AND m.genreId > ?2")
 //    List<Movie> findMoviesByReleaseDateEqualsAndGenreIdIsGreaterThan(LocalDate date, Long genreId);
 

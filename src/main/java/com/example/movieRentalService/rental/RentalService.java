@@ -1,17 +1,13 @@
 package com.example.movieRentalService.rental;
 
-import com.example.movieRentalService.movie.Movie;
 import com.example.movieRentalService.movie.MovieRepository;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class RentalService {
@@ -36,45 +32,30 @@ public class RentalService {
     }
 
     @Transactional
-    public void addRental(List<Rental> rentalList) {
+    public void addRental(List<Rental> rentalList, Long movieId) {
         for (Rental rental: rentalList) {
-            var movie = movieRepository.findById(rental.getMovieId());
+            var movie = movieRepository.findById(movieId);
             if (movie.isEmpty()) {
-                throw new IllegalStateException("The movie with id (" + rental.getMovieId() + ") is not in the database");
+                throw new IllegalStateException("The movie with id (" + movieId + ") is not in the database");
             }
-            if (!checkAvailability(rental)) {
+            if (!checkAvailability(rental, movieId)) {
                 throw new IllegalStateException(
-                        "The movie with id (" + rental.getMovieId() + ") is already rented for this period"
+                        "The movie with id (" + movieId + ") is already rented for this period"
                 );
             }
-            rental.setTotalWeeks(rental.calculateTotalWeeks());
-            float totalPrice = getTotalPrice(movie, rental.getTotalWeeks());
-            rental.setTotalPrice(totalPrice);
+            rental.setMovie(movie.get());
+            rental.calculateTotalWeeks();
+            rental.calculateTotalPrice();
             rentalRepository.save(rental);
         }
     }
 
-    private float getTotalPrice(Optional<Movie> movie, long weeks) {
-        float totalPrice = 0.0f;
-        if (movie.isPresent()) {
-            totalPrice = movie.get().getPriceList().getNewMoviePrice().getPrice() * weeks;
-            weeks -= movie.get().getPriceList().getNewMoviePrice().getDuration();
-            if (weeks > 0) {
-                totalPrice += movie.get().getPriceList().getRegularMoviePrice().getPrice() * weeks;
-                weeks -= movie.get().getPriceList().getRegularMoviePrice().getDuration();
-            }
-            if (weeks > 0) {
-                totalPrice += movie.get().getPriceList().getOldMoviePrice().getPrice() * weeks;
-            }
 
-        }
-        return totalPrice;
-    }
 
-    private boolean checkAvailability(Rental rental) {
-        return rentalRepository.findByMovieIdAndEndDateIsGreaterThanEqualAndEndDateIsBefore(rental.getMovieId(), rental.getStartDate(), rental.getEndDate()).isEmpty() &&
-                rentalRepository.findByMovieIdAndStartDateIsLessThanEqualAndEndDateIsGreaterThanEqual(rental.getMovieId(), rental.getStartDate(), rental.getEndDate()).isEmpty() &&
-                rentalRepository.findByMovieIdAndStartDateIsAfterAndStartDateIsLessThanEqual(rental.getMovieId(), rental.getStartDate(), rental.getEndDate()).isEmpty();
+    private boolean checkAvailability(Rental rental, Long movieId) {
+        return rentalRepository.findByMovieIdAndEndDateIsGreaterThanEqualAndEndDateIsLessThanEqual(movieId, rental.getStartDate(), rental.getEndDate()).isEmpty() &&
+               rentalRepository.findByMovieIdAndStartDateIsLessThanEqualAndEndDateIsGreaterThanEqual(movieId, rental.getStartDate(), rental.getEndDate()).isEmpty() &&
+               rentalRepository.findByMovieIdAndStartDateIsGreaterThanEqualAndStartDateIsLessThanEqual(movieId, rental.getStartDate(), rental.getEndDate()).isEmpty();
     }
 
     @Transactional
@@ -82,8 +63,10 @@ public class RentalService {
         var rental = rentalRepository.findById(id).orElseThrow(() -> new IllegalStateException(
                 "The rental with id (" + id + ") is not in the database"
         ));
-        if (movieId != null && !Objects.equals(rental.getMovieId(), movieId)) {
-            rental.setMovieId(movieId);
+        if (movieId != null && !Objects.equals(rental.getMovie().getId(), movieId)) {
+            rental.setMovie(movieRepository.findById(movieId).orElseThrow(() -> new IllegalStateException(
+                    "The movie with id (" + movieId + ") is not in the database"
+            )));
         }
         if (startDate != null && !Objects.equals(rental.getStartDate(), startDate)) {
             rental.setStartDate(startDate);
@@ -101,5 +84,9 @@ public class RentalService {
                 "The rental with id (" + id + ") is not in the database"
         ));
         rentalRepository.deleteById(id);
+    }
+
+    public List<Object> getStatistics() {
+        return rentalRepository.countRentals();
     }
 }

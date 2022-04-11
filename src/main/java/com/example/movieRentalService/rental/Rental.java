@@ -1,6 +1,6 @@
 package com.example.movieRentalService.rental;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.movieRentalService.movie.Movie;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -26,12 +26,14 @@ public class Rental {
     )
     private Long id;
 
-    @Column (
-            name = "movie_id",
-            updatable = false,
-            columnDefinition = "INT NOT NULL"
+    @ManyToOne
+    @JoinColumn (
+            name = "movie_id",          // column in movie table
+            nullable = false,
+            referencedColumnName = "id", // id column in genre table
+            foreignKey = @ForeignKey(name = "movie_id_fk")  // to specify the name
     )
-    private Long movieId;
+    private Movie movie;
 
     @Column (
             name = "start_date"
@@ -48,8 +50,8 @@ public class Rental {
     )
     private float totalPrice;
 
-    @Transient  // don't make it a column in table in database
-    @JsonIgnore // don't include it in resulting JSON object
+//    @Transient  // don't make it a column in table in database
+//    @JsonIgnore // don't include it in resulting JSON object
     private Long totalWeeks;
 
     public Long getTotalWeeks() {
@@ -60,17 +62,52 @@ public class Rental {
         this.totalWeeks = totalWeeks;
     }
 
-    public long calculateTotalWeeks() {
-        return (long) Math.ceil(ChronoUnit.DAYS.between(this.startDate, this.endDate) / 7.0);
+    public void calculateTotalWeeks() {
+        this.totalWeeks = (long) Math.ceil(ChronoUnit.DAYS.between(this.startDate, this.endDate) / 7.0);
+    }
+
+    public long getWeeksUntilRentalStart() {
+        return (long) Math.max(Math.ceil(ChronoUnit.DAYS.between(LocalDate.now(), this.startDate) / 7.0), 0);
+    }
+
+    public void calculateTotalPrice() {
+        float totalPrice = 0.0f;
+        long weeksUntil = getWeeksUntilRentalStart();
+        int newDuration = movie.getPriceList().getNewMoviePrice().getDuration();
+        int regularDuration = movie.getPriceList().getRegularMoviePrice().getDuration();
+        long weeks = totalWeeks;
+        System.out.println("regular duration until: " + regularDuration);
+        newDuration = Math.max((int) (newDuration - weeksUntil), 0);
+        weeksUntil = Math.max(weeksUntil - movie.getPriceList().getNewMoviePrice().getDuration(), 0);
+
+        if (newDuration > 0) {
+            totalPrice = movie.getPriceList().getNewMoviePrice().getPrice() * weeks;
+            weeks -= weeks;
+        }
+        if (weeks > 0) {
+            regularDuration = Math.max((int) (regularDuration - weeksUntil), 0);
+            System.out.println("regular duration after: " + regularDuration);
+            if (regularDuration > 0) {
+                System.out.println("total price: " + totalPrice);
+                System.out.println("total weeks: " + weeks);
+
+                totalPrice += movie.getPriceList().getRegularMoviePrice().getPrice() * weeks;
+                weeks -= weeks;
+
+                System.out.println("total price: " + totalPrice);
+                System.out.println("total weeks: " + weeks);
+            }
+            totalPrice += movie.getPriceList().getOldMoviePrice().getPrice() * weeks;
+            System.out.println("total price: " + totalPrice);
+        }
+        this.totalPrice = totalPrice;
+        System.out.println(weeks);
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setMovieId(Long movieId) {
-        this.movieId = movieId;
-    }
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
@@ -92,9 +129,6 @@ public class Rental {
         return id;
     }
 
-    public Long getMovieId() {
-        return movieId;
-    }
 
     public LocalDate getStartDate() {
         return startDate;
@@ -108,14 +142,12 @@ public class Rental {
         return totalPrice;
     }
 
-    public Rental(Long movieId, LocalDate startDate, LocalDate endDate) {
-        this.movieId = movieId;
+    public Rental(LocalDate startDate, LocalDate endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public Rental(Long movieId, LocalDate startDate, LocalDate endDate, float totalPrice) {
-        this.movieId = movieId;
+    public Rental(LocalDate startDate, LocalDate endDate, float totalPrice) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalPrice = totalPrice;
@@ -124,15 +156,11 @@ public class Rental {
     public Rental() {
     }
 
-    @Override
-    public String toString() {
-        return "Rental{" +
-                "id=" + id +
-                ", movieId=" + movieId +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", totalPrice=" + totalPrice +
-                ", totalWeeks=" + totalWeeks +
-                '}';
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 }

@@ -1,15 +1,10 @@
 package com.example.movieRentalService.moviePrice;
 
 public class OldMoviePrice {
-    private String title = "New Movie";
-    private int duration;
+    private String title = "Old Movie";
     private float price = 1.99f;
 
     public OldMoviePrice() {
-    }
-
-    public OldMoviePrice(int duration) {
-        this.duration = duration;
     }
 
     public String getTitle() {
@@ -20,17 +15,8 @@ public class OldMoviePrice {
         this.title = title;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public OldMoviePrice(String title, int duration, float price) {
+    public OldMoviePrice(String title, float price) {
         this.title = title;
-        this.duration = duration;
         this.price = price;
     }
 
@@ -50,7 +36,6 @@ public class OldMoviePrice {
     public String toString() {
         return "OldMoviePrice{" +
                 "title='" + title + '\'' +
-                ", duration=" + duration +
                 ", price=" + price +
                 '}';
     }

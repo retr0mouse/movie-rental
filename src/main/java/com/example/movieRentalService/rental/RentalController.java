@@ -29,9 +29,14 @@ public class RentalController {
         return rentalService.getRentalById(id);
     }
 
+    @GetMapping(value = "getStatistics")
+    public List<Object> getStatistics() {
+        return rentalService.getStatistics();
+    }
+
     @PostMapping("add")
-    public void addRental(@RequestBody List<Rental> rentalList) {
-        rentalService.addRental(rentalList);
+    public void addRental(@RequestBody List<Rental> rentalList, @RequestParam Long movieId) {
+        rentalService.addRental(rentalList, movieId);
     }
 
     @PutMapping(path = "{rentalId}")
@@ -41,5 +46,10 @@ public class RentalController {
                              @RequestParam(required = false) LocalDate endDate,
                              @RequestParam(required = false) float totalPrice) {
         rentalService.updateRental(id, movieId,startDate, endDate, totalPrice);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public void deleteRental(@PathVariable("id") Long id) {
+        rentalService.deleteRental(id);
     }
 }
