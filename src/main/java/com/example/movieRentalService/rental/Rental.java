@@ -1,8 +1,8 @@
-package com.example.movies_rent_service.rental;
+package com.example.movieRentalService.rental;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.temporal.ChronoUnit;
 
 @Entity(name = "Rental")
 @Table (name = "rental")
@@ -46,6 +46,8 @@ public class Rental {
     )
     private float totalPrice;
 
+
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -59,6 +61,10 @@ public class Rental {
     }
 
     public void setEndDate(LocalDate endDate) {
+        if (endDate.isBefore(this.startDate)) {
+            throw new IllegalStateException(
+                    "The rental end date shouldn't be before the start date");
+        }
         this.endDate = endDate;
     }
 
@@ -95,4 +101,15 @@ public class Rental {
 
     public Rental() {
     }
+
+//    @Transient
+//    private Long totalWeeks = ChronoUnit.WEEKS.between(this.getStartDate(), this.getEndDate());
+//
+//    public Long getTotalWeeks() {
+//        return totalWeeks;
+//    }
+//
+//    public void setTotalWeeks(Long totalWeeks) {
+//        this.totalWeeks = totalWeeks;
+//    }
 }

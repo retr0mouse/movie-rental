@@ -1,15 +1,20 @@
-package com.example.movies_rent_service.movie;
+package com.example.movieRentalService.movie;
 
-import com.example.movies_rent_service.actor.Actor;
-import com.example.movies_rent_service.actor_in_movie.ActorInMovie;
-import com.example.movies_rent_service.genre.Genre;
+import com.example.movieRentalService.actorInMovie.ActorInMovie;
+import com.example.movieRentalService.genre.Genre;
+import com.example.movieRentalService.moviePrice.NewMoviePrice;
+import com.example.movieRentalService.moviePrice.OldMoviePrice;
+import com.example.movieRentalService.moviePrice.PriceList;
+import com.example.movieRentalService.moviePrice.RegularMoviePrice;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import static java.lang.Math.abs;
 
 @Entity (name = "Movie")
 @Table (name = "movie")
@@ -44,8 +49,21 @@ public class Movie {
     )
     private LocalDate releaseDate;
 
-    @Transient  // tells Hibernate that this shouldn't be a table
-    private Float price;
+    @Transient  // tells Hibernate that this shouldn't be in a table
+    private PriceList priceList;
+
+    public PriceList getPriceList() {
+        long weeksOld = ChronoUnit.WEEKS.between(this.releaseDate, LocalDate.now());
+        var newPrice = new NewMoviePrice(Math.max(52 - (int) weeksOld, 0));
+        var regularPrice = new RegularMoviePrice(Math.max(156 - (int) weeksOld - newPrice.getDuration(), 0));
+        var oldPrice = new OldMoviePrice();
+        this.setPriceList(new PriceList(newPrice, regularPrice, oldPrice));
+        return this.priceList;
+    }
+
+    public void setPriceList(PriceList priceList) {
+        this.priceList = priceList;
+    }
 
 //    @Column (
 //            name = "genre_id",
@@ -99,7 +117,7 @@ public class Movie {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", releaseDate=" + releaseDate +
-                ", price=" + price +
+                ", price=" + priceList +
                 ", genre=" + genre +
                 ", actorsInMovies=" + actorsInMovies +
                 '}';
@@ -132,7 +150,10 @@ public class Movie {
         this.title = title;
     }
 
-    public void setReleaseDate(LocalDate releaseDate) {
+    public void setReleaseDate(LocalDate releaseDate) throws IllegalStateException{
+        if (releaseDate.isAfter(LocalDate.now())) {
+            throw new IllegalStateException("Movie release date should not be in future");
+        }
         this.releaseDate = releaseDate;
     }
 

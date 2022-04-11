@@ -1,7 +1,7 @@
-package com.example.movies_rent_service.movie;
+package com.example.movieRentalService.movie;
 
-import com.example.movies_rent_service.actor_in_movie.ActorInMovieRepository;
-import com.example.movies_rent_service.genre.GenreRepository;
+import com.example.movieRentalService.actorInMovie.ActorInMovieRepository;
+import com.example.movieRentalService.genre.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

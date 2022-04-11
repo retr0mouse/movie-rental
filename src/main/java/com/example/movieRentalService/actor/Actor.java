@@ -1,13 +1,11 @@
-package com.example.movies_rent_service.actor;
+package com.example.movieRentalService.actor;
 
-import com.example.movies_rent_service.actor_in_movie.ActorInMovie;
-import com.example.movies_rent_service.movie.Movie;
+import com.example.movieRentalService.actorInMovie.ActorInMovie;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity(name = "Actor")

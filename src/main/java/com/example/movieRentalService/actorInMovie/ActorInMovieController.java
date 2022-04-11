@@ -1,4 +1,4 @@
-package com.example.movies_rent_service.actor_in_movie;
+package com.example.movieRentalService.actorInMovie;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

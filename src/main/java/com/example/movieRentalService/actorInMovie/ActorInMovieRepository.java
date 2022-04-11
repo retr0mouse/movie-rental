@@ -1,4 +1,4 @@
-package com.example.movies_rent_service.actor_in_movie;
+package com.example.movieRentalService.actorInMovie;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

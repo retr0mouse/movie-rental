@@ -1,7 +1,7 @@
-package com.example.movies_rent_service.actor_in_movie;
+package com.example.movieRentalService.actorInMovie;
 
-import com.example.movies_rent_service.actor.Actor;
-import com.example.movies_rent_service.movie.Movie;
+import com.example.movieRentalService.actor.Actor;
+import com.example.movieRentalService.movie.Movie;
 
 import javax.persistence.*;
 

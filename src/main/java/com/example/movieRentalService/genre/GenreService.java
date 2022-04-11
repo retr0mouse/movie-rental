@@ -1,4 +1,4 @@
-package com.example.movies_rent_service.genre;
+package com.example.movieRentalService.genre;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

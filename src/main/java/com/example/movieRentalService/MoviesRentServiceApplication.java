@@ -1,25 +1,18 @@
-package com.example.movies_rent_service;
+package com.example.movieRentalService;
 
-import com.example.movies_rent_service.actor.Actor;
-import com.example.movies_rent_service.actor.ActorRepository;
-import com.example.movies_rent_service.actor_in_movie.ActorInMovie;
-import com.example.movies_rent_service.actor_in_movie.ActorInMovieId;
-import com.example.movies_rent_service.genre.Genre;
-import com.example.movies_rent_service.genre.GenreRepository;
-import com.example.movies_rent_service.movie.Movie;
-import com.example.movies_rent_service.movie.MovieRepository;
+import com.example.movieRentalService.actor.ActorRepository;
+import com.example.movieRentalService.genre.Genre;
+import com.example.movieRentalService.genre.GenreRepository;
+import com.example.movieRentalService.movie.Movie;
+import com.example.movieRentalService.movie.MovieRepository;
 import com.github.javafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Date;
 
 @SpringBootApplication
@@ -34,19 +27,21 @@ public class MoviesRentServiceApplication {
                                         GenreRepository genreRepository,
                                         ActorRepository actorRepository) {
         return args -> {
-//            var faker = new Faker();
-//
-//            var genre = new Genre(
-//                    faker.book().genre(),
-//                    faker.lorem().sentence()
-//            );
-//            var movie1 = generateRandomMovie();
+            var faker = new Faker();
+
+            var genre = new Genre(
+                    faker.book().genre(),
+                    faker.lorem().sentence()
+            );
+            var movie1 = generateRandomMovie();
+            movie1.getPriceList();
 //            var movie2 = generateRandomMovie();
 //            var movie3 = generateRandomMovie();
 //
 //            genre.addMovie(movie1);
 //            genre.addMovie(movie2);
 //            genre.addMovie(movie3);
+//            System.out.println();
 //
 //            var actor1 = new Actor(
 //                    "Not Ryan",

@@ -1,10 +1,9 @@
-package com.example.movies_rent_service.genre;
+package com.example.movieRentalService.genre;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/genre")

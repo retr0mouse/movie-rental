@@ -1,11 +1,9 @@
-package com.example.movies_rent_service.genre;
+package com.example.movieRentalService.genre;
 
-import com.example.movies_rent_service.movie.Movie;
+import com.example.movieRentalService.movie.Movie;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
