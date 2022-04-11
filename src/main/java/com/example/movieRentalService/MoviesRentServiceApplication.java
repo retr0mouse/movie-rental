@@ -33,8 +33,10 @@ public class MoviesRentServiceApplication {
                     faker.book().genre(),
                     faker.lorem().sentence()
             );
-            var movie1 = generateRandomMovie();
-            movie1.getPriceList();
+            generateRandomMovies(movieRepository, genre);
+            genreRepository.save(genre);
+//            var movie1 = generateRandomMovie();
+//            movie1.getPriceList();
 //            var movie2 = generateRandomMovie();
 //            var movie3 = generateRandomMovie();
 //
@@ -97,17 +99,12 @@ public class MoviesRentServiceApplication {
                 .forEach(movie -> System.out.printf("%s, date: %s \n", movie.getTitle(), movie.getReleaseDate()));
     }
 
-//    private void generateRandomMovies(MovieRepository movieRepository) {
-//        var faker = new Faker();
-//        for (int i = 0; i <= 20; i++) {
-//            var movie = new Movie(
-//                    faker.book().title(),
-//                    faker.date().between(new Date(0L), new Date()),
-//                    Integer.toUnsignedLong(Integer.parseInt(faker.number().digit()))
-//            );
-//            movieRepository.save(movie);
-//        }
-//    }
+    private void generateRandomMovies(MovieRepository movieRepository, Genre genre) {
+        var faker = new Faker();
+        for (int i = 0; i <= 20; i++) {
+            genre.addMovie(generateRandomMovie());
+        }
+    }
 
     private void generateRandomGenres(GenreRepository genreRepository) {
         var faker = new Faker();

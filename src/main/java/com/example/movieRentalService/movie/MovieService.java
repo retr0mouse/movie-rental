@@ -3,6 +3,7 @@ package com.example.movieRentalService.movie;
 import com.example.movieRentalService.actorInMovie.ActorInMovieRepository;
 import com.example.movieRentalService.genre.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,5 +82,32 @@ public class MovieService {
         }
         actorInMovieRepository.deleteActorInMovieByMovieId(id);
         movieRepository.deleteById(id);
+    }
+
+    public List<Movie> getSortedMovies(String sort1, String sort2, String type1, String type2) {
+        Sort sort = Sort.by("title").ascending();
+        if (type1 != null && sort1 != null) {
+            if ("d".equals(type1)) {
+                sort = Sort.by(sort1).descending();
+            } else {
+                sort = Sort.by(sort1).ascending();
+            }
+        }
+
+        if (type2 != null && sort2 != null) {
+            if ("d".equals(type2)) {
+                sort = sort.and(Sort.by(sort2).descending());
+            } else {
+                sort = sort.and(Sort.by(sort2).ascending());
+            }
+        }
+        return movieRepository.findAll(sort);
+    }
+
+    private void sorting(MovieRepository movieRepository) {
+        var sort = Sort.by("genreId").ascending()   // this one doesn't work if the variable name contains '_'
+                .and(Sort.by("releaseDate").descending());
+        movieRepository.findAll(sort)
+                .forEach(movie -> System.out.printf("%s, date: %s \n", movie.getTitle(), movie.getReleaseDate()));
     }
 }

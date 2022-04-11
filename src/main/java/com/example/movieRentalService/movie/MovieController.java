@@ -29,6 +29,14 @@ public class MovieController {
         return movieService.getMovieById(longId);
     }
 
+    @GetMapping("getSorted")
+    public List<Movie> getSortedMovies(@RequestParam(value = "sort1", required = false) String sort1,
+                                       @RequestParam(value = "sort2", required = false) String sort2,
+                                       @RequestParam(value = "type1", required = false) String type1,
+                                       @RequestParam(value = "type2", required = false) String type2) {
+        return movieService.getSortedMovies(sort1, sort2, type1, type2);
+    }
+
     @PostMapping("add")
     public void addMovie(@RequestBody Movie movie, @RequestParam String genreTitle) {
         movieService.addMovie(movie, genreTitle);

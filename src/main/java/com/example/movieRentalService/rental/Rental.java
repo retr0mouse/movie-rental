@@ -1,5 +1,7 @@
 package com.example.movieRentalService.rental;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -46,7 +48,21 @@ public class Rental {
     )
     private float totalPrice;
 
+    @Transient  // don't make it a column in table in database
+    @JsonIgnore // don't include it in resulting JSON object
+    private Long totalWeeks;
 
+    public Long getTotalWeeks() {
+        return totalWeeks;
+    }
+
+    public void setTotalWeeks(Long totalWeeks) {
+        this.totalWeeks = totalWeeks;
+    }
+
+    public long calculateTotalWeeks() {
+        return (long) Math.ceil(ChronoUnit.DAYS.between(this.startDate, this.endDate) / 7.0);
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -92,6 +108,12 @@ public class Rental {
         return totalPrice;
     }
 
+    public Rental(Long movieId, LocalDate startDate, LocalDate endDate) {
+        this.movieId = movieId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public Rental(Long movieId, LocalDate startDate, LocalDate endDate, float totalPrice) {
         this.movieId = movieId;
         this.startDate = startDate;
@@ -102,14 +124,15 @@ public class Rental {
     public Rental() {
     }
 
-//    @Transient
-//    private Long totalWeeks = ChronoUnit.WEEKS.between(this.getStartDate(), this.getEndDate());
-//
-//    public Long getTotalWeeks() {
-//        return totalWeeks;
-//    }
-//
-//    public void setTotalWeeks(Long totalWeeks) {
-//        this.totalWeeks = totalWeeks;
-//    }
+    @Override
+    public String toString() {
+        return "Rental{" +
+                "id=" + id +
+                ", movieId=" + movieId +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", totalPrice=" + totalPrice +
+                ", totalWeeks=" + totalWeeks +
+                '}';
+    }
 }

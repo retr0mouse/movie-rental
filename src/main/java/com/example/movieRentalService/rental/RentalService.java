@@ -1,5 +1,6 @@
 package com.example.movieRentalService.rental;
 
+import com.example.movieRentalService.movie.Movie;
 import com.example.movieRentalService.movie.MovieRepository;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class RentalService {
@@ -45,10 +47,17 @@ public class RentalService {
                         "The movie with id (" + rental.getMovieId() + ") is already rented for this period"
                 );
             }
-            long days = ChronoUnit.DAYS.between(rental.getStartDate(), rental.getEndDate());
-            double weeks = Math.ceil(days / 7.0);
-            System.out.println(weeks);
-            var totalPrice = movie.get().getPriceList().getNewMoviePrice().getPrice() * weeks;
+            rental.setTotalWeeks(rental.calculateTotalWeeks());
+            float totalPrice = getTotalPrice(movie, rental.getTotalWeeks());
+            rental.setTotalPrice(totalPrice);
+            rentalRepository.save(rental);
+        }
+    }
+
+    private float getTotalPrice(Optional<Movie> movie, long weeks) {
+        float totalPrice = 0.0f;
+        if (movie.isPresent()) {
+            totalPrice = movie.get().getPriceList().getNewMoviePrice().getPrice() * weeks;
             weeks -= movie.get().getPriceList().getNewMoviePrice().getDuration();
             if (weeks > 0) {
                 totalPrice += movie.get().getPriceList().getRegularMoviePrice().getPrice() * weeks;
@@ -57,9 +66,9 @@ public class RentalService {
             if (weeks > 0) {
                 totalPrice += movie.get().getPriceList().getOldMoviePrice().getPrice() * weeks;
             }
-            rental.setTotalPrice((float) totalPrice);
-            rentalRepository.save(rental);
+
         }
+        return totalPrice;
     }
 
     private boolean checkAvailability(Rental rental) {
